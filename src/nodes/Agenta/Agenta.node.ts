@@ -49,18 +49,6 @@ export class Agenta implements INodeType {
 				default: 'fetchPromptConfig',
 			},
 			{
-				displayName: 'Base URL',
-				name: 'baseUrl',
-				type: 'string',
-				default: 'https://cloud.agenta.ai',
-				description: 'Your Agenta instance URL',
-				displayOptions: {
-					show: {
-						operation: ['fetchPromptConfig', 'invokeLlm'],
-					},
-				},
-			},
-			{
 				displayName: 'Environment',
 				name: 'environment',
 				type: 'options',
@@ -165,7 +153,8 @@ export class Agenta implements INodeType {
 		for (let i = 0; i < items.length; i++) {
 			try {
 				const operation = this.getNodeParameter('operation', i) as string;
-				const baseUrl = this.getNodeParameter('baseUrl', i) as string;
+				const credentials = await this.getCredentials('agentaApi');
+				const baseUrl = credentials.baseUrl as string;
 				const environment = this.getNodeParameter('environment', i) as string;
 				const applicationSlug = this.getNodeParameter('applicationSlug', i) as string;
 

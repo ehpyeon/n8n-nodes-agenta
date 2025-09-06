@@ -14,6 +14,14 @@ export class AgentaApi implements ICredentialType {
 
 	properties: INodeProperties[] = [
 		{
+			displayName: 'Base URL',
+			name: 'baseUrl',
+			type: 'string',
+			required: true,
+			default: 'https://cloud.agenta.ai',
+			description: 'Your Agenta instance URL',
+		},
+		{
 			displayName: 'API Key',
 			name: 'apiKey',
 			type: 'string',
@@ -35,7 +43,7 @@ export class AgentaApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			baseURL: 'https://cloud.agenta.ai',
+			baseURL: '={{$credentials.baseUrl}}',
 			url: '/api/api/variants/configs/fetch',
 			method: 'POST',
 			body: {
