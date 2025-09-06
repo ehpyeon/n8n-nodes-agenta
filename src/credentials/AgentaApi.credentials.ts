@@ -44,20 +44,8 @@ export class AgentaApi implements ICredentialType {
 	test: ICredentialTestRequest = {
 		request: {
 			baseURL: '={{$credentials.baseUrl}}',
-			url: '/api/api/variants/configs/fetch',
-			method: 'POST',
-			body: {
-				environment_ref: {
-					slug: 'development',
-					version: null,
-					id: null,
-				},
-				application_ref: {
-					slug: 'test',
-					version: null,
-					id: null,
-				},
-			},
+			url: '/',
+			method: 'GET',
 		},
 	};
 }
