@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-agenta",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Agenta prompt management nodes for n8n",
   "license": "MIT",
   "homepage": "https://github.com/agenta-ai/n8n-nodes-agenta",
