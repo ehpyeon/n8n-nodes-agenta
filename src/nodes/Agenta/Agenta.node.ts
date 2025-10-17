@@ -87,19 +87,46 @@ export class Agenta implements INodeType {
 				},
 			},
 			{
-				displayName: 'Text Input',
-				name: 'textInput',
-				type: 'string',
+				displayName: 'Input Variables',
+				name: 'inputVariables',
+				type: 'fixedCollection',
 				typeOptions: {
-					rows: 3,
+					multipleValues: true,
 				},
-				default: '',
-				description: 'Text to process with LLM',
+				default: {},
+				description: 'Variables to pass to the LLM',
 				displayOptions: {
 					show: {
 						operation: ['invokeLlm'],
 					},
 				},
+				options: [
+					{
+						name: 'variable',
+						displayName: 'Variable',
+						values: [
+							{
+								displayName: 'Variable Name',
+								name: 'name',
+								type: 'string',
+								default: '',
+								description: 'Name of the variable',
+								placeholder: 'e.g., text, context, prompt',
+							},
+							{
+								displayName: 'Variable Value',
+								name: 'value',
+								type: 'string',
+								typeOptions: {
+									rows: 3,
+								},
+								default: '',
+								description: 'Value of the variable',
+								placeholder: 'Enter the value for this variable',
+							},
+						],
+					},
+				],
 			},
 			{
 				displayName: 'Options',
@@ -212,21 +239,33 @@ export class Agenta implements INodeType {
 						pairedItem: { item: i },
 					});
 				} else if (operation === 'invokeLlm') {
-					const textInput = this.getNodeParameter('textInput', i) as string;
+					const inputVariables = this.getNodeParameter('inputVariables', i, {}) as {
+						variable?: Array<{ name: string; value: string }>;
+					};
 
 					// Validate required fields
-					if (!textInput) {
-						throw new Error('Text input is required for invoking LLM');
-					}
 					if (!applicationSlug) {
 						throw new Error('Application slug is required for invoking LLM');
 					}
 
+					// Build inputs object from dynamic variables
+					const inputs: Record<string, string> = {};
+					if (inputVariables.variable && Array.isArray(inputVariables.variable)) {
+						for (const variable of inputVariables.variable) {
+							if (variable.name && variable.value !== undefined) {
+								inputs[variable.name] = variable.value;
+							}
+						}
+					}
+
+					// Validate that at least one input variable is provided
+					if (Object.keys(inputs).length === 0) {
+						throw new Error('At least one input variable is required for invoking LLM');
+					}
+
 					// Build request body
 					const requestBody = {
-						inputs: {
-							text: textInput,
-						},
+						inputs,
 						environment,
 						app: applicationSlug,
 					};
@@ -254,7 +293,7 @@ export class Agenta implements INodeType {
 							operation: 'invokeLlm',
 							environment,
 							applicationSlug,
-							textInput,
+							inputVariables: inputs,
 						},
 						pairedItem: { item: i },
 					});
