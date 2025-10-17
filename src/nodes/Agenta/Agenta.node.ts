@@ -103,7 +103,7 @@ export class Agenta implements INodeType {
 				options: [
 					{
 						name: 'variable',
-						displayName: 'Variable',
+						displayName: 'Add Input',
 						values: [
 							{
 								displayName: 'Variable Name',
